@@ -10,3 +10,12 @@ body{
     padding: 5px 20% 5px 20%;
 }
 
+/* Chrome, Opera, Safari */
+details summary::-webkit-details-marker {
+display: none;
+}
+/* Firefox */
+details, summary {
+display: block;
+}
+
