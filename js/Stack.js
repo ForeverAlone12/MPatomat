@@ -36,8 +36,8 @@ var stack = {
         this.stack.splice(0, 0, END_STACK);
     }, 
     /**
-     * 
-     * @return {undefined}
+     * Получение символов, находящихся в стеке
+     * @return {String}
      */
     getStack:function(){
         return this.stack.join();

@@ -20,11 +20,12 @@ var automat = {
      */
     ps: "",
     table: [],
+    
     work: function (str) {
-
         var tape = new tape();
         tape.setTape(str);
         var stack = new stack();
+        stack.create();
         this.createRulez();
         // определение длины цепочки
         lenTape = tape.getTape().length;
@@ -113,6 +114,13 @@ var automat = {
      */
     setPS: function (str) {
         ps = str;
+    }, 
+    /**
+     * Получить таблицу переходов
+     * @return {Array}
+     */
+    getTable:function(){
+        return this.table;
     }
 };
 
