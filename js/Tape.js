@@ -1,36 +1,38 @@
-var tape = {
-    /**
-     * Конечный символ строки
-     * @type {String}
-     */
-    END_STR: "e",
-    /**
-     * Входная последовательность
-     * @type {String}
-     */
-    tape: "",
-    /**
-     * Установить цепочку
-     * @param {String} str входная цепочку 
-     */
-    setTape: function (str) {
-        this.tape = str.trim() + this.END_STR;
-    },
+class Tape {
+
+    constructor(str) {
+        /**
+         * Конечный символ строки
+         * @type {String}
+         */
+        this.END_STR = "e";
+        /**
+         * Входная последовательность
+         * @type {String}
+         */
+        this.tape = str + this.END_STR;
+    }
+
     /**
      * Получение входной последовательности целиком
      */
-    getTape: function () {
+    getTape() {
         return this.tape;
-    },
+    }
     /**
      * Получение символа из входной последовательности
      * @param {number} pos позиция для считывания символа
      * @return {String} символ из входной последовательности на позици pos
      */
-    getTape: function (pos) {
-        return this.tape.substring(pos, 1);
-    },
-    getTape: function (start, end) {
-        return this.tape.substring(start, end);
+//    getTape(pos) {
+//        var str = .tape.substring(pos, 1);
+//        return str;
+//    }
+//    getTape(start, end) {
+//        return this.tape.substring(start, end);
+//    }
+    getSymbol() {
+        return this.END_STR;
     }
-};
+
+}

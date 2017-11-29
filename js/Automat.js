@@ -1,50 +1,64 @@
-var automat = {
-    /**
-     * Состояние автомата
-     * @type {Number}
-     */
-    q: 0,
-    /**
-     * Правила перехода
-     * @type {Array}
-     */
-    rulez: [],
-    /**
-     * Результат работы автомата
-     * @type {String}
-     */
-    rezult: "",
-    /**
-     * Информация об ошибки
-     * @type {String}
-     */
-    ps: "",
-    table: [],
-    
-    work: function (str) {
-        var tape = new tape();
-        tape.setTape(str);
-        var stack = new stack();
-        stack.create();
-        this.createRulez();
+var script = document.createElement('script');
+script.src = 'js/Tape.js';
+document.getElementsByTagName('head')[0].appendChild(script);
+
+var script = document.createElement('script');
+script.src = 'js/Stack.js';
+document.getElementsByTagName('head')[0].appendChild(script);
+
+class Automat {
+
+    constructor() {
+        /**
+         * Состояние автомата
+         * @type {Number}
+         */
+        this.q = 0;
+        /**
+         * Правила перехода
+         * @type {Array}
+         */
+        this.rulez = [];
+        /**
+         * Результат работы автомата
+         * @type {String}
+         */
+        this.rezult = "Успешно! Данная цепочка принадлежит языку";
+        /**
+         * Информация об ошибки
+         * @type {String}
+         */
+        this.ps = "";
+        this.table = [];
+    }
+
+    work(input) {
+        this.init();
+        var tape = new Tape(input);
+        var stack = new Stack();
+        var strEndTape = tape.getSymbol();
+        var strEndStack = stack.getSymbol();
+        this.createRulez(strEndStack, strEndTape);
+
+        var str = tape.getTape();
         // определение длины цепочки
-        lenTape = tape.getTape().length;
-        str = tape.getTape();
+        var lenTape = str.length;
+
         for (var i = 0; i < lenTape; i++) {
             var magazine = stack.getStack(); // элементы магазина
-            var tape = str.slice(i); //  элементы входной строки
-            var symbol = tape.getTape(i);
+            var symbol = str[i]; //  элементы входной строки
             var upStack = stack.top();
+
             // занесение результатов в таблицу функций перехода
-            table.push("<tr><td>" + magazine + "</td><td>" + q + "</td><td>" + tape + "</td></tr>");
+            this.table.push("<tr><td>" + magazine + "</td><td>" + this.q + "</td><td>" + str.substring(i) + "</td></tr>");
             for (var j = 0; j < 5; j++) {
-                if (q == rulez[j][0] && // поиск состояния автомата
-                        symbol == rulez[j][1] && // поиск входного символа
-                        upStack == rulez[j][2]) { // поиск состояния магазина
+                if (this.q == this.rulez[j][0] && // поиск состояния автомата
+                        symbol == this.rulez[j][1] && // поиск входного символа
+                        upStack == this.rulez[j][2]) { // поиск состояния магазина
 
-                    q = rulez[j][3]; // переход в следующее состояние
+                    this.q = this.rulez[j][3]; // переход в следующее состояние
 
-                    switch (rulez[j][4]) {
+                    switch (this.rulez[j][4]) {
                         case "add":
                             stack.push(str[i]);
                             break;
@@ -52,76 +66,79 @@ var automat = {
                             stack.del();
                             break;
                         case "good":
-                            this.getRezult();
+                            return;
                             break;
                     } // switch
                     break;
                 } // if
 
-                if ((j == 4) && ((symbol != tape.END_STR) || (upStack != stack.END_STACK))) {
+                if ((j == 4) && ((symbol != strEndTape) || (upStack != strEndStack))) {
                     this.setRezult("Ошибка:  данная цепочка не принадлежит языку - печалька((( ");
-                    if ((symbol == tape.END_STR) && (upStack == 0)) {
+                    if ((symbol == strEndTape) && (upStack == 0)) {
                         this.setPS("P.S. Нулей больше, чем единиц");
                     } else if ((symbol == "1") && (upStack == stack.END_STACK)) {
-                        setPS("P.S. Нулей меньше, чем единиц");
+                        this.setPS("P.S. Нулей меньше, чем единиц");
                     } else {
-                        setPS("P.S. Неизвестный символ");
+                        this.setPS("P.S. Неизвестный символ");
                         var input = document.getElementById("tape");
                         input.focus();
                         input.setSelectionRange(i, i + 1);
                     }
-
                     return;
                 }
-
-
             } // for {j}
         } // for {i}
 
+    }
+    init() {
+        this.q = 0;
+        this.rulez = [];
+        this.rezult = "Успешно! Данная цепочка принадлежит языку";
+        this.ps = "";
+        //table = [];
+    }
 
-    },
     /**
      * Создание правил перехода
      * @return {undefined}
      */
-    createRulez: function () {
-        rulez = [
-            [0, "0", stack.END_STACK, 1, "add"],
+    createRulez(endStack, endTape) {
+        this.rulez = [
+            [0, "0", endStack, 1, "add"],
             [1, "0", "0", 1, "add"],
             [1, "1", "0", 2, "del"],
             [2, "1", "0", 2, "del"],
-            [2, stack.END_STACK, tape.END_STR, 1, "good"]
+            [2, endStack, endTape, 1, "good"]
         ];
-    },
+    }
     /**
      * Установка результата работы автомата
      * @param {String} rez результата работы автомата
      */
-    setReazult: function (rez) {
-        rezult = rez;
-    },
+    setRezult(rez) {
+        this.rezult = rez;
+    }
     /**
      * Получить результат работы автомата
      * @return {String} результат работы автомата
      */
-    getRezult: function () {
-        alert(rezult + "\n" + ps);
-
-    },
+    getRezult() {
+        return this.rezult + "\n" + this.ps;
+    }
     /**
      * Установить информацию об ошибке в работе автомата
      * @param {String} str информация об ошибке в работе автомата
      */
-    setPS: function (str) {
-        ps = str;
-    }, 
+    setPS(str) {
+        this.ps = str;
+    }
     /**
      * Получить таблицу переходов
      * @return {Array}
      */
-    getTable:function(){
+    getTable() {
         return this.table;
     }
-};
+}
 
 

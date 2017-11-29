@@ -1,34 +1,64 @@
-var automat = new automat();
+var script = document.createElement('script');
+script.src = 'js/Automat.js';
+document.getElementsByTagName('head')[0].appendChild(script);
+
+
 /**
  * Непрерывный режим работы
  */
 function work() {
-    this.automat.work(this.read());
+    $("#tabl1").empty();
+    var a = new Automat();
+    a.work(read());
     var rez = [];
-    rez = this.automat.getTable();
+    rez = a.getTable();
     for (var i = 0; i < rez.length; i++) {
-        $("table").add(rez[i]);
+        $("#tabl1").append(rez[i]);
     }
-}
+    str = a.getRezult();
+    alert(str);
 
+}
 var q = 0;
 var k = 0;
+var c = 0;
+var z = [];
+var str;
 /**
  * Пошаговый
  */
 function w() {
-    if (this.q == 0)
+    console.log("Начало функции");
+    console.log("k = " + k);
+    console.log("q = " + q);
+    console.log("l = " + c);
+    if (q == 0)
     {
-        this.automat.work(this.read());
+        $("#tabl1").empty();
+        var a = new Automat();
+        a.work(this.read());        
+        z = a.getTable();
+        c = z.length;
+        str = a.getRezult();
+
         k = 0;
         q = 1;
-    } else
-    {
-        if (k < JumpFunction.Count)
-            $("table").add(rez[k++]);
-        if (k == JumpFunction.Count)
-            q = 0;
+        w();
 
+    } else {
+        console.log("Вывод таблицы");
+        console.log("k = " + k);
+        console.log("q = " + q);
+        console.log("l = " + c);
+        console.log(k < c);
+        if (k < c) {
+            $("#tabl1").append(z[k++]);
+        }
+
+        if (k == c) {
+            q = 0;
+            alert(str);
+        }
     }
 }
 
@@ -36,8 +66,6 @@ function w() {
  * Считывание цепочки
  */
 function read() {
-    return $("tape").val();
+    return $("#tape").val();
 }
-
-
 
